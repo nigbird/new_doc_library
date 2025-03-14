@@ -1,4 +1,5 @@
 import os
+import sys
 
 from config.env import APPS_DIR, BASE_DIR, env
 
@@ -11,6 +12,12 @@ SECRET_KEY = "your-secret-key"
 DEBUG = env.bool("DJANGO_DEBUG", default=True)  # type: ignore
 
 ALLOWED_HOSTS = ["*"]
+
+# Check if tests are running
+if 'test' in sys.argv:
+    DEBUG_TOOLBAR = False
+else:
+    DEBUG_TOOLBAR = True
 
 # Application definition
 
@@ -40,6 +47,9 @@ INSTALLED_APPS: list[str] = [
     'django.contrib.staticfiles',
 ] + LOCAL_APPS + THIRD_PARTY_APPS
 
+if DEBUG_TOOLBAR:
+    INSTALLED_APPS += ['debug_toolbar']
+
 MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -52,6 +62,9 @@ MIDDLEWARE: list[str] = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
 ]
+
+if DEBUG_TOOLBAR:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = "config.urls"
 
@@ -162,11 +175,6 @@ from config.settings.logging import *  # noqa
 from config.settings.cors import *  # noqa
 from config.settings.files_and_storages import *  # noqa
 from config.settings.sessions import *  # noqa
-
-from config.settings.debug_toolbar.settings import *  # noqa
-from config.settings.debug_toolbar.setup import DebugToolbarSetup  # noqa
-
-INSTALLED_APPS, MIDDLEWARE = DebugToolbarSetup.do_settings(INSTALLED_APPS, MIDDLEWARE)
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django API Template",
