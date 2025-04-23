@@ -181,3 +181,4 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "A reusable template for creating Django APIs quickly and efficiently. Includes best practices, configurations, and initial setup to jump start your Django projects.",  # noqa: E501
     "VERSION": "1.0.0",
 }
+
